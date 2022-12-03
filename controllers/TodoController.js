@@ -18,11 +18,17 @@ const addTodo = async (req, res) => {
 }
 
 const deleteTodo = async (req, res) => {
-  const { todoId } = req.body;
+  const { todoId, userId } = req.body;
   let message = '';
   let status = false;
   if (todoId) {
     await Todo.deleteOne({ _id: todoId }).exec();
+    const user = await User.findById(userId);
+    if (user) {
+      const index = user.todos.indexOf(todoId);
+      user.todos.splice(index, 1);
+      await user.save();
+    }
     message = "todo eliminated correctly";
     status = true;
   }
