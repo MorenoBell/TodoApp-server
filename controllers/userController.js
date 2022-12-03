@@ -1,13 +1,18 @@
 const User = require('../models/User')
-
 const createNewUser = async (rq, res) => {
   const { user, pwd } = rq.body;
   if (user && pwd) {
-    const newUser = await User.create({
-      username: user,
-      password: pwd
-    });
-    res.status(201).json({ "user": newUser });
+    const arleadyExUser = await User.findOne({ username: user });
+    if (arleadyExUser) {
+      res.status(201).json({ "message": "A user with this username arleady exists" });
+    }
+    else {
+      const newUser = await User.create({
+        username: user,
+        password: pwd
+      });
+      res.status(201).json({ "user": newUser });
+    }
   }
   else {
     res.status(400).json({ "message": "username or pw not good" })

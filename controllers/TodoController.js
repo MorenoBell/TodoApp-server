@@ -7,9 +7,9 @@ const addTodo = async (req, res) => {
     const user = await User.findById(userId);
     const todo = new Todo();
     todo.description = description;
-    todo.save();
+    await todo.save();
     user.todos.push(todo);
-    user.save();
+    await user.save();
     res.status(201).json({ "message": "All good", "status": "true" });
   }
   else {
@@ -45,7 +45,7 @@ const changeTodoState = async (req, res) => {
     if (todoId) {
       const todo = await Todo.findById(todoId);
       if (todo) {
-        Todo.findOneAndUpdate({ _id: todoId }, { checked: !todo.checked });
+        await Todo.findOneAndUpdate({ _id: todoId }, { checked: !todo.checked });
         status = true;
       }
       message = 'All good';
