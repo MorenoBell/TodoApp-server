@@ -1,3 +1,4 @@
+const { findOneAndUpdate } = require('../models/Todo');
 const Todo = require('../models/Todo');
 const User = require('../models/User');
 
@@ -7,6 +8,7 @@ const addTodo = async (req, res) => {
     const user = await User.findById(userId);
     const todo = new Todo();
     todo.description = description;
+    todo.user = userId;
     await todo.save();
     user.todos.push(todo);
     await user.save();
@@ -69,11 +71,30 @@ const changeTodoState = async (req, res) => {
   });
 }
 
+const modifyTodo = async (req, res) => {
+  const { todoId, description } = req.body;
+  const todo = await Todo.findById(todoId);
+  let status = false;
+  let message = '';
+  if (todo) {
+    await Todo.findOneAndUpdate({ _id: todoId }, { description: description });
+    status = true;
+    message = 'All good';
+  }
+  else {
+    message = 'couldn\'t find the todo';
+  }
+  res.status(201).json({
+    message: message,
+    status: status
+  });
+}
+
 const getTodosByUser = async (req, res) => {
   const { userId } = req.body;
   const user = await User.findById(userId).exec();
   if (user) {
-    const todos = await Todo.find().where('_id').in(user.todos).exec();
+    const todos = await Todo.find({ user: user._id });
     res.status(201).json({ "message": "All good", "status": "true", "todos": todos });
 
   }
@@ -81,4 +102,4 @@ const getTodosByUser = async (req, res) => {
     res.status(201).json({ "message": "user not found", "status": "false" });
   }
 }
-module.exports = { addTodo, getTodosByUser, deleteTodo, changeTodoState }
+module.exports = { modifyTodo, addTodo, getTodosByUser, deleteTodo, changeTodoState }

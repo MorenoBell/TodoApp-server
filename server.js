@@ -15,7 +15,7 @@ async function connect() {
 }
 connect();
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://todoapp-ouu6.onrender.com");//"https://todoapp-ouu6.onrender.com");
+  res.header("Access-Control-Allow-Origin", "*");//"https://todoapp-ouu6.onrender.com");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });

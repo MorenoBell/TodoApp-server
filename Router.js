@@ -11,5 +11,6 @@ router.post('/addTodo', todoController.addTodo);
 router.post('/getTodosByUser', todoController.getTodosByUser);
 router.post('/deleteTodo', todoController.deleteTodo);
 router.post('/changeTodoState', todoController.changeTodoState);
+router.post('/modifyTodo', todoController.modifyTodo);
 
 module.exports = router
